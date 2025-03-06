@@ -1,4 +1,4 @@
-const backendURL = "https://sistema-de-reservas-o0v3.onrender.com";  // Tu URL de Render
+const backendURL = "https://sistema-de-reservas-o0v3.onrender.com";  // URL del backend en Render
 
 document.addEventListener("DOMContentLoaded", function () {
     // Llenar el select de hora con opciones
@@ -75,6 +75,4 @@ document.getElementById("btnGuardar").addEventListener("click", function () {
         console.error(error);
         document.getElementById("mensaje").innerText = "Hubo un problema al guardar la reservación.";
     });
-});
-
 });
