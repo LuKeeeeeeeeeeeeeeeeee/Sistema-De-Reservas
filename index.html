@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reservaciones</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Reservaciones</h1>
+    <button id="btnAgendar">Agendar Reservación</button>
+    <button id="btnVer">Ver Reservaciones</button>
+
+    <div id="formulario" style="display:none;">
+        <label>Nombre:</label>
+        <input type="text" id="nombre" maxlength="20" required>
+        
+        <label>Fecha:</label>
+        <input type="date" id="fecha" required>
+
+        <label>Hora:</label>
+        <select id="hora"></select>
+
+        <label>Número de Personas:</label>
+        <select id="personas"></select>
+
+        <button id="btnGuardar">Guardar</button>
+        <p id="mensaje"></p>
+    </div>
+
+    <div id="reservaciones" style="display:none;"></div>
+    <script src="script.js"></script>
+</body>
+</html>
