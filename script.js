@@ -1,4 +1,4 @@
-const backendURL = "https://sistema-de-reservas-7pd4.onrender.com"; // Asegúrate de que esta URL sea la correcta
+const backendURL = "https://sistema-de-reservas-o0v3.onrender.com"; // Asegúrate de que esta URL sea la correcta
 // Función que se ejecuta cuando el DOM está completamente cargado
 document.addEventListener("DOMContentLoaded", function () {
     // Llenar el select de hora con opciones
