@@ -1,54 +1,36 @@
 const express = require('express');
-const fs = require('fs');
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware para parsear el cuerpo de las peticiones como JSON
+// Usar CORS para permitir peticiones desde otros dominios (necesario para tu frontend)
+app.use(cors());
+
+// Configurar el servidor para manejar peticiones JSON
 app.use(express.json());
 
-// Ruta para obtener las reservaciones (lectura)
-app.get('/leer', (req, res) => {
-    const path = '/tmp/Num_Reserva/Num_Reserva.txt'; // Ruta temporal en Render
+// Datos de ejemplo (deberías reemplazar esto con acceso a tu base de datos)
+let reservaciones = [
+    { nombre: 'Juan', fecha: '2025-03-10 10:00', personas: 2 },
+    { nombre: 'Ana', fecha: '2025-03-11 12:00', personas: 4 }
+];
 
-    // Verificar si el archivo existe
-    fs.readFile(path, 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error al leer el archivo:', err);
-            res.status(500).send('Hubo un problema al cargar las reservaciones.');
-        } else {
-            res.send(data);  // Enviar el contenido del archivo como respuesta
-        }
-    });
+// Ruta para obtener todas las reservaciones
+app.get('/leer', (req, res) => {
+    res.json(reservaciones);  // Devolver las reservaciones como JSON
 });
 
-// Ruta para guardar las reservaciones
+// Ruta para guardar una nueva reservación
 app.post('/guardar', (req, res) => {
     const { nombre, fecha, personas } = req.body;
-    
-    // Crear la carpeta si no existe
-    const dirPath = '/tmp/Num_Reserva';
-    if (!fs.existsSync(dirPath)) {
-        fs.mkdirSync(dirPath, { recursive: true });
+
+    if (!nombre || !fecha || !personas) {
+        return res.status(400).send("Faltan datos requeridos.");
     }
 
-    // Definir la ruta del archivo donde se guardará la reservación
-    const filePath = `${dirPath}/Num_Reserva.txt`;
+    // Guardar la nueva reservación en el array (simulando un almacenamiento)
+    const nuevaReservacion = { nombre, fecha, personas };
+    reservaciones.push(nuevaReservacion);
 
-    // Preparar el contenido a escribir en el archivo
-    const reservacionData = `Nombre: ${nombre}\nFecha: ${fecha}\nNúmero de Personas: ${personas}\n\n`;
-
-    // Escribir la nueva reservación en el archivo
-    fs.appendFile(filePath, reservacionData, (err) => {
-        if (err) {
-            console.error('Error al guardar la reservación:', err);
-            res.status(500).send('Hubo un problema al guardar la reservación.');
-        } else {
-            res.send('Reservación guardada correctamente.');
-        }
-    });
-});
-
-// Servir la aplicación en el puerto definido
-app.listen(port, () => {
-    console.log(`Servidor corriendo en http://localhost:${port}`);
+    res.status(200).send("Reservación guardada exitosamente.");
 });
