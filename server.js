@@ -1,14 +1,22 @@
 const express = require('express');
 const fs = require('fs');
+const cors = require('cors');
+const path = require('path');
+
 const app = express();
-
-// Habilitar el uso de JSON en las peticiones
 app.use(express.json());
+app.use(cors()); // Habilitar CORS
 
-// Ruta para leer reservaciones (esto es solo un ejemplo, puedes modificar la lógica)
+const FILE_PATH = 'reservas.txt';
+
+// Servir un mensaje en la ruta raíz para evitar "Cannot GET /"
+app.get('/', (req, res) => {
+    res.send("Servidor de Reservas Activo 🚀");
+});
+
+// Ruta para leer las reservaciones
 app.get('/leer', (req, res) => {
-    // Aquí podrías leer el archivo o base de datos
-    fs.readFile('reservas.txt', 'utf8', (err, data) => {
+    fs.readFile(FILE_PATH, 'utf8', (err, data) => {
         if (err) {
             console.error("Error al leer el archivo:", err);
             return res.status(500).send("Hubo un problema al obtener las reservaciones.");
@@ -17,14 +25,17 @@ app.get('/leer', (req, res) => {
     });
 });
 
-// Ruta para guardar reservación (esto es solo un ejemplo)
+// Ruta para guardar una reservación
 app.post('/guardar', (req, res) => {
     const { nombre, fecha, personas } = req.body;
 
-    // Lógica para guardar la reservación
+    if (!nombre || !fecha || !personas) {
+        return res.status(400).send("Todos los campos son obligatorios.");
+    }
+
     const nuevaReserva = `Nombre: ${nombre}, Fecha: ${fecha}, Personas: ${personas}\n`;
 
-    fs.appendFile('reservas.txt', nuevaReserva, 'utf8', (err) => {
+    fs.appendFile(FILE_PATH, nuevaReserva, 'utf8', (err) => {
         if (err) {
             console.error("Error al guardar la reservación:", err);
             return res.status(500).send("Hubo un problema al guardar la reservación.");
@@ -33,8 +44,13 @@ app.post('/guardar', (req, res) => {
     });
 });
 
-// Usar el puerto proporcionado por Render o 3000 por defecto
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log(`Servidor escuchando en el puerto ${port}`);
+// Verificar que el archivo reservas.txt exista
+if (!fs.existsSync(FILE_PATH)) {
+    fs.writeFileSync(FILE_PATH, '', 'utf8');
+}
+
+// Configuración del puerto en Render
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor funcionando en el puerto ${PORT}`);
 });
