@@ -1,7 +1,7 @@
-const backendURL = "https://sistema-de-reservas-o0v3.onrender.com"; // Asegúrate de que esta URL sea la correcta
-// Función que se ejecuta cuando el DOM está completamente cargado
+const backendURL = "https://sistema-de-reservas-o0v3.onrender.com";
+
 document.addEventListener("DOMContentLoaded", function () {
-    // Llenar el select de hora con opciones
+    
     const horaSelect = document.getElementById('hora');
     const horas = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'];
     horas.forEach(hora => {
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Mostrar el formulario al hacer clic en "Agendar Reservación"
+
 document.getElementById("btnAgendar").addEventListener("click", function () {
     document.getElementById("formulario").style.display = "block";  // Mostrar el formulario
     document.getElementById("reservaciones").style.display = "none";  // Ocultar la lista de reservaciones
