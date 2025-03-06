@@ -1,4 +1,4 @@
-const backendURL = "https://reservas-backend.onrender.com";
+const backendURL = "https://sistema-de-reservas-5p56.onrender.com";
 
 // Función que se ejecuta cuando el DOM está completamente cargado
 document.addEventListener("DOMContentLoaded", function () {
@@ -77,3 +77,4 @@ document.getElementById("btnGuardar").addEventListener("click", function () {
         document.getElementById("mensaje").innerText = "Hubo un problema al guardar la reservación.";
     });
 });
+
