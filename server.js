@@ -1,9 +1,13 @@
 const express = require("express");
 const fs = require("fs");
+const cors = require("cors");
 const app = express();
 
 app.use(express.static("."));
 app.use(express.json());
+app.use(cors());
+
+const PORT = process.env.PORT || 3000;
 
 app.post("/guardar", (req, res) => {
     const { nombre, fecha, personas } = req.body;
@@ -22,5 +26,4 @@ app.get("/leer", (req, res) => {
     res.send(reservas || "No hay reservaciones.");
 });
 
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor corriendo en el puerto ${PORT}`));
