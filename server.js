@@ -12,7 +12,7 @@ app.use(express.json());
 
 // Ruta principal (para verificar que el servidor está activo)
 app.get("/", (req, res) => {
-    res.send("Servidor de Reservas Activo 🚀");
+    res.send("Servidor de Reservas Activo 🧐");
 });
 
 // Ruta para leer reservaciones
