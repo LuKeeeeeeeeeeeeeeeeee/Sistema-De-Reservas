@@ -1,36 +1,40 @@
 const express = require('express');
-const cors = require('cors');
+const fs = require('fs');
 const app = express();
-const port = process.env.PORT || 3000;
 
-// Usar CORS para permitir peticiones desde otros dominios (necesario para tu frontend)
-app.use(cors());
-
-// Configurar el servidor para manejar peticiones JSON
+// Habilitar el uso de JSON en las peticiones
 app.use(express.json());
 
-// Datos de ejemplo (deberías reemplazar esto con acceso a tu base de datos)
-let reservaciones = [
-    { nombre: 'Juan', fecha: '2025-03-10 10:00', personas: 2 },
-    { nombre: 'Ana', fecha: '2025-03-11 12:00', personas: 4 }
-];
-
-// Ruta para obtener todas las reservaciones
+// Ruta para leer reservaciones (esto es solo un ejemplo, puedes modificar la lógica)
 app.get('/leer', (req, res) => {
-    res.json(reservaciones);  // Devolver las reservaciones como JSON
+    // Aquí podrías leer el archivo o base de datos
+    fs.readFile('reservas.txt', 'utf8', (err, data) => {
+        if (err) {
+            console.error("Error al leer el archivo:", err);
+            return res.status(500).send("Hubo un problema al obtener las reservaciones.");
+        }
+        res.send(data);
+    });
 });
 
-// Ruta para guardar una nueva reservación
+// Ruta para guardar reservación (esto es solo un ejemplo)
 app.post('/guardar', (req, res) => {
     const { nombre, fecha, personas } = req.body;
 
-    if (!nombre || !fecha || !personas) {
-        return res.status(400).send("Faltan datos requeridos.");
-    }
+    // Lógica para guardar la reservación
+    const nuevaReserva = `Nombre: ${nombre}, Fecha: ${fecha}, Personas: ${personas}\n`;
 
-    // Guardar la nueva reservación en el array (simulando un almacenamiento)
-    const nuevaReservacion = { nombre, fecha, personas };
-    reservaciones.push(nuevaReservacion);
+    fs.appendFile('reservas.txt', nuevaReserva, 'utf8', (err) => {
+        if (err) {
+            console.error("Error al guardar la reservación:", err);
+            return res.status(500).send("Hubo un problema al guardar la reservación.");
+        }
+        res.send("Reservación guardada con éxito.");
+    });
+});
 
-    res.status(200).send("Reservación guardada exitosamente.");
+// Usar el puerto proporcionado por Render o 3000 por defecto
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`Servidor escuchando en el puerto ${port}`);
 });
