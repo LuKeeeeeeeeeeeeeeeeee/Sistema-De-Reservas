@@ -1,4 +1,4 @@
-const backendURL = "https://sistema-de-reservas-5p56.onrender.com";  // Asegúrate de usar la URL correcta del backend
+const backendURL = "https://sistema-de-reservas-5p56.onrender.com"; // Asegúrate de que esta URL sea la correcta
 
 document.addEventListener("DOMContentLoaded", function () {
     // Llenar el select de hora con opciones
@@ -32,12 +32,19 @@ document.getElementById("btnVer").addEventListener("click", function () {
     fetch(`${backendURL}/leer`)
         .then(response => {
             if (!response.ok) {
-                throw new Error("No se pudo obtener las reservaciones.");
+                throw new Error(`Error al obtener las reservaciones: ${response.statusText}`);
             }
-            return response.text();
+            return response.json();  // Cambié a .json() para obtener datos JSON
         })
         .then(data => {
-            document.getElementById("reservaciones").innerText = data;
+            // Mostrar las reservaciones
+            let reservacionesHtml = "<ul>";
+            data.forEach(res => {
+                reservacionesHtml += `<li>${res.nombre} - ${res.fecha} - ${res.personas} persona(s)</li>`;
+            });
+            reservacionesHtml += "</ul>";
+
+            document.getElementById("reservaciones").innerHTML = reservacionesHtml;
             document.getElementById("reservaciones").style.display = "block";  // Mostrar la lista de reservaciones
             document.getElementById("formulario").style.display = "none";  // Ocultar el formulario
         })
@@ -65,10 +72,10 @@ document.getElementById("btnGuardar").addEventListener("click", function () {
         if (!response.ok) {
             throw new Error("Error al guardar la reservación.");
         }
-        return response.text();
+        return response.text();  // Mostrar el mensaje de éxito
     })
     .then(data => {
-        document.getElementById("mensaje").innerText = data;  // Mostrar el mensaje de éxito
+        document.getElementById("mensaje").innerText = data;
         document.getElementById("formulario").style.display = "none";  // Ocultar el formulario después de guardar
     })
     .catch(error => {
