@@ -1,29 +1,54 @@
-const express = require("express");
-const fs = require("fs");
-const cors = require("cors");
+const express = require('express');
+const fs = require('fs');
 const app = express();
+const port = process.env.PORT || 3000;
 
-app.use(express.static("."));
+// Middleware para parsear el cuerpo de las peticiones como JSON
 app.use(express.json());
-app.use(cors());
 
-const PORT = process.env.PORT || 3000;
+// Ruta para obtener las reservaciones (lectura)
+app.get('/leer', (req, res) => {
+    const path = '/tmp/Num_Reserva/Num_Reserva.txt'; // Ruta temporal en Render
 
-app.post("/guardar", (req, res) => {
+    // Verificar si el archivo existe
+    fs.readFile(path, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error al leer el archivo:', err);
+            res.status(500).send('Hubo un problema al cargar las reservaciones.');
+        } else {
+            res.send(data);  // Enviar el contenido del archivo como respuesta
+        }
+    });
+});
+
+// Ruta para guardar las reservaciones
+app.post('/guardar', (req, res) => {
     const { nombre, fecha, personas } = req.body;
-    let filePath = `Num_Reserva/${nombre.replace(/\s/g, "_")}.txt`;
-
-    if (fs.existsSync(filePath)) {
-        res.send("Ya existe una reservación para este momento");
-    } else {
-        fs.writeFileSync(filePath, `${nombre}\n${fecha}\n${personas}`);
-        res.send("Reservación guardada con éxito");
+    
+    // Crear la carpeta si no existe
+    const dirPath = '/tmp/Num_Reserva';
+    if (!fs.existsSync(dirPath)) {
+        fs.mkdirSync(dirPath, { recursive: true });
     }
+
+    // Definir la ruta del archivo donde se guardará la reservación
+    const filePath = `${dirPath}/Num_Reserva.txt`;
+
+    // Preparar el contenido a escribir en el archivo
+    const reservacionData = `Nombre: ${nombre}\nFecha: ${fecha}\nNúmero de Personas: ${personas}\n\n`;
+
+    // Escribir la nueva reservación en el archivo
+    fs.appendFile(filePath, reservacionData, (err) => {
+        if (err) {
+            console.error('Error al guardar la reservación:', err);
+            res.status(500).send('Hubo un problema al guardar la reservación.');
+        } else {
+            res.send('Reservación guardada correctamente.');
+        }
+    });
 });
 
-app.get("/leer", (req, res) => {
-    let reservas = fs.readdirSync("Num_Reserva").map(file => fs.readFileSync(`Num_Reserva/${file}`, "utf-8")).join("\n\n");
-    res.send(reservas || "No hay reservaciones.");
+// Servir la aplicación en el puerto definido
+app.listen(port, () => {
+    console.log(`Servidor corriendo en http://localhost:${port}`);
 });
-
-app.listen(PORT, () => console.log(`Servidor corriendo en el puerto ${PORT}`));
